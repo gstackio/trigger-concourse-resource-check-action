@@ -1,0 +1,31 @@
+name: Trigger Concourse resource-check
+description:
+  Triggers a resource-check in a specific Concourse pipeline
+branding:
+  color: blue
+  icon: rotate-cw
+
+inputs:
+  concourse-url:
+    description: The base URL for your Concourse CI
+    required: true
+  concourse-team:
+    description: The Concourse team where the pipeline lives
+    required: true
+    default: main
+  concourse-pipeline:
+    description: The Concourse pipeline where the resource lives
+    required: true
+  concourse-resource:
+    description: The resource where a check is to be triggered
+    required: true
+
+runs:
+  using: composite  
+  steps:
+    - name: Trigger a resource check in Concourse
+      run:
+        curl --silent --fail --show-error --location
+            --request "POST"
+            --url "${{ inputs.concourse-url }}/api/v1/teams/${{ inputs.concourse-team }}/pipelines/${{ inputs.concourse-pipeline }}/resources/${{ inputs.concourse-resource }}/check/webhook?webhook_token=${{ secrets.CONCOURSE_WEBHOOK_TOKEN }}"
+      shell: bash
