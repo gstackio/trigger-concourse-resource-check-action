@@ -17,7 +17,12 @@ inputs:
     description: The Concourse pipeline where the resource lives
     required: true
   concourse-resource:
-    description: The resource where a check is to be triggered
+    description: The resource for which a check is to be triggered
+    required: true
+  concourse-webhook-token:
+    description:
+      The secret value used for the 'webhook_token' property of the Concourse
+      resource
     required: true
 
 runs:
@@ -27,5 +32,5 @@ runs:
       run:
         curl --silent --fail --show-error --location
             --request "POST"
-            --url "${{ inputs.concourse-url }}/api/v1/teams/${{ inputs.concourse-team }}/pipelines/${{ inputs.concourse-pipeline }}/resources/${{ inputs.concourse-resource }}/check/webhook?webhook_token=${{ secrets.CONCOURSE_WEBHOOK_TOKEN }}"
+            --url "${{ inputs.concourse-url }}/api/v1/teams/${{ inputs.concourse-team }}/pipelines/${{ inputs.concourse-pipeline }}/resources/${{ inputs.concourse-resource }}/check/webhook?webhook_token=${{ inputs.concourse-webhook-token }}"
       shell: bash

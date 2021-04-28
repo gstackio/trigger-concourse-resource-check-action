@@ -28,17 +28,19 @@ jobs:
       - name: Trigger resource check
         uses: gstackio/trigger-concourse-resource-check-action@v1
         with:
-          concourse-url:      https://concourse.example.com
-          concourse-team:     developers
-          concourse-pipeline: deploy-app
-          concourse-resource: github-source-code
+          concourse-url:           https://concourse.example.com
+          concourse-team:          developers
+          concourse-pipeline:      deploy-app
+          concourse-resource:      github-repo
+          concourse-webhook-token: ${{ secrets.CONCOURSE_WEBHOOK_TOKEN }}
 ```
 
 #### Concourse pipeline secret generatioin
 
 A `concourse-webhook-token` secret should be created in your Concourses secret
 vault, which can be either Credhub or Hashicorp Vault. Ask your Concourse ops
-team about which vault implementation is used by your Concourse installation.
+team about which vault implementation is actually used by your Concourse
+installation.
 
 Typically you generate it directly in Credhub with a `credhub` CLI invocation
 like the following.
@@ -96,7 +98,8 @@ need to define it as a custom resource type.
 Resource of type [`github-pr`][github_pr_rsc] come as a plugin in Concourse,
 referred to as a “custom resource type”. You need to declare it in the
 [`resource_types`][rsc_types_config] section of your pipeline declaratioin.
-Refer to the `github-pr` documentation for [examples][github_pr_rsc_examples].
+Refer to the `github-pr` documentation for
+[detailed examples][github_pr_rsc_examples].
 
 The `concourse-webhook-token` secret generation in Credhub and
 `CONCOURSE_WEBHOOK_TOKEN` secret setup in Github are the same as above with a
@@ -122,10 +125,11 @@ jobs:
       - name: Trigger resource check
         uses: gstackio/trigger-concourse-resource-check-action@v1
         with:
-          concourse-url:      https://concourse.example.com
-          concourse-team:     developers
-          concourse-pipeline: test-app
-          concourse-resource: github-pull-requests
+          concourse-url:           https://concourse.example.com
+          concourse-team:          developers
+          concourse-pipeline:      test-app
+          concourse-resource:      github-pull-requests
+          concourse-webhook-token: ${{ secrets.CONCOURSE_WEBHOOK_TOKEN }}
 ```
 
 
@@ -135,10 +139,11 @@ jobs:
 
 All inputs are required.
 
-* **concourse-url:** The base concourse URL
-* **concourse-team:** The concourse team where the pipeline lives. If not set, defaults to `main`
-* **concourse-pipeline:** The concourse pipeline where the job lives
-* **concourse-resource:** The job in the pipeline to trigger
+* **concourse-url:** The base URL for your Concourse CI
+* **concourse-team:** The Concourse team where the pipeline lives. If not set, defaults to `main`
+* **concourse-pipeline:** The Concourse pipeline where the resource lives
+* **concourse-resource:** The resource for which a check is to be triggered
+* **concourse-webhook-token:** The secret value used for the `webhook_token` property of the Concourse resource
 
 ### Required secrets
 
@@ -154,8 +159,9 @@ None
 ```yaml
 uses: gstackio/trigger-concourse-resource-check-action@v1
 with:
-  concourse-url: https://concourse.example.com
-  concourse-team: test
-  concourse-pipeline: deploy-app
-  concourse-resource: build-and-deploy
+  concourse-url:           https://concourse.example.com
+  concourse-team:          test
+  concourse-pipeline:      deploy-app
+  concourse-resource:      build-and-deploy
+  concourse-webhook-token: secret-token-value
 ```
