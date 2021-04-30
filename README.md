@@ -1,7 +1,7 @@
 # Trigger Concourse resource-check action
 
 This action will trigger a resource check in a specific
-[Concourse](https://concourse-ci.org) pipeline.
+[Concourse](https://concourse-ci.org) pipeline using [webhook_token](https://concourse-ci.org/resources.html#schema.resource.webhook_token) resource.
 
 This is best-practice when integrating Github with Concourse, in order for
 Concourse to immediately detect changes that have just been pushed to branches
