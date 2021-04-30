@@ -29,8 +29,20 @@ runs:
   using: composite  
   steps:
     - name: Trigger a resource check in Concourse
-      run:
-        curl --silent --fail --show-error --location
-            --request "POST"
-            --url "${{ inputs.concourse-url }}/api/v1/teams/${{ inputs.concourse-team }}/pipelines/${{ inputs.concourse-pipeline }}/resources/${{ inputs.concourse-resource }}/check/webhook?webhook_token=${{ inputs.concourse-webhook-token }}"
+      run: |
+        function esc() {
+            python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1]))" "$1"
+        }
+
+        url="${{ inputs.concourse-url }}"
+        url+="/api/v1/teams/$(esc "${{ inputs.concourse-team }}")"
+        url+="/pipelines/$(esc "${{ inputs.concourse-pipeline }}")"
+        url+="/resources/$(esc "${{ inputs.concourse-resource }}")"
+        url+="/check/webhook?webhook_token="
+
+        echo "Querying URL: '${url}<redacted>'"
+
+        url+=$(esc "${{ inputs.concourse-webhook-token }}")
+
+        curl --silent --fail --show-error --location --request "POST" --url "${url}"
       shell: bash
