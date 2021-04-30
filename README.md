@@ -20,8 +20,8 @@ Here is below an example workflow configuration that you can add in the
 `.github/workflows` folder of your Git repo.
 
 ```yaml
-name: Trigger Concourse push
-on: push
+name: Trigger Concourse git resource
+on: [ push, workflow_dispatch ]
 jobs:
   trigger-resource-check:
     runs-on: ubuntu-latest
@@ -118,8 +118,8 @@ Here is below an example workflow configuration that you can add in the
 event types should be listened at in this case.
 
 ```yaml
-name: Trigger Concourse pull request
-on: [ push, pull_request ]
+name: Trigger Concourse pull-request resource
+on: [ push, pull_request, workflow_dispatch ]
 jobs:
   trigger-resource-check:
     runs-on: ubuntu-latest
